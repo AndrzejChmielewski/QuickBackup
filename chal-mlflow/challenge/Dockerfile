@@ -23,7 +23,6 @@ RUN chmod +x /start.sh
 
 ADD basic_auth.db /
 
-
 VOLUME /tmp
 
 RUN echo 'deb http://archive.debian.org/debian/ bullseye main' >> /etc/apt/sources.list
@@ -39,13 +38,8 @@ COPY --from=chroot / /chroot
 
 COPY nsjail.cfg /home/user/nsjail.cfg
 
+#CMD kctf_setup \
+#    && (kctf_drop_privs nsjail --config /home/user/nsjail.cfg --port 1337 -- /start.sh)
+
 CMD kctf_setup \
-    && (kctf_drop_privs nsjail --config /home/user/nsjail.cfg --port 1337 -- /start.sh)
-
-
-#to run with auth
-#/usr/local/bin/mlflow server --host 0.0.0.0 --app-name basic-auth
-
-#[mlflow]
-#mlflow_tracking_username = username
-#mlflow_tracking_password = password
+    && kctf_drop_privs nsjail -E ROOTFLAG=$(cat /flag/flag-root.txt) --config /home/user/nsjail.cfg --port 1337 -- /start.sh
