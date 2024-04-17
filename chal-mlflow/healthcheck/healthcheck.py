@@ -13,24 +13,19 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
+# MLflow server URL
+import requests
 
-import pwnlib.tubes
+mlflow_url = "http://localhost:1337"  
 
-def handle_pow(r):
-    print(r.recvuntil(b'python3 '))
-    print(r.recvuntil(b' solve '))
-    challenge = r.recvline().decode('ascii').strip()
-    p = pwnlib.tubes.process.process(['kctf_bypass_pow', challenge])
-    solution = p.readall().strip()
-    r.sendline(solution)
-    print(r.recvuntil(b'Correct\n'))
+# Endpoint to check the MLflow server health
+health_endpoint = mlflow_url + "/health"
 
-r = pwnlib.tubes.remote.remote('127.0.0.1', 1337)
-print(r.recvuntil('== proof-of-work: '))
-if r.recvline().startswith(b'enabled'):
-    handle_pow(r)
+response = requests.get(health_endpoint)
 
-print(r.recvuntil(b'CTF{'))
-print(r.recvuntil(b'}'))
-
-exit(0)
+if response.status_code == 200:
+    print("MLflow server is healthy")
+    exit(0)  # Success, MLflow server is running
+else:
+    print("MLflow server is not healthy")
+    exit(1)  # Failure, MLflow server is not running or not accessible

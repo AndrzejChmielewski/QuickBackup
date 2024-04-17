@@ -35,11 +35,17 @@ FROM gcr.io/kctf-docker/challenge@sha256:0f7d757bcda470c3bbc063606335b915e03795d
 VOLUME /chroot/mlruns
 
 COPY --from=chroot / /chroot
+#RUN chown -Rc user /chroot/usr/local/lib/python3.10/site-packages/mlflow/server/js/build/
+VOLUME /chroot/usr/local/lib/python3.10/site-packages/mlflow/server/js/build/
 
 COPY nsjail.cfg /home/user/nsjail.cfg
 
 #CMD kctf_setup \
 #    && (kctf_drop_privs nsjail --config /home/user/nsjail.cfg --port 1337 -- /start.sh)
 
-CMD kctf_setup \
+#CMD kctf_setup \
+#    && kctf_drop_privs nsjail -E ROOTFLAG=$(cat /flag/flag-root.txt) --config /home/user/nsjail.cfg --port 1337 -- /start.sh
+
+CMD sed -i "1 a$(cat /flag/flag.txt)" /chroot/usr/local/lib/python3.10/site-packages/mlflow/server/js/build/index.html; \
+    kctf_setup \
     && kctf_drop_privs nsjail -E ROOTFLAG=$(cat /flag/flag-root.txt) --config /home/user/nsjail.cfg --port 1337 -- /start.sh
