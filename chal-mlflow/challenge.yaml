@@ -10,22 +10,22 @@ spec:
     ports:
       - protocol: "TCP"
         targetPort: 1337
-  #podTemplate:
-  #  template:
-  #    spec:
-  #      containers:
-  #        - name: challenge
-  #          volumeMounts:
-  #            - name: flag-volume
-  #              mountPath: "/chroot/flag"
-  #      serviceAccountName: secret-readonly-sa
-  #      volumes:
-  #        - name: flag-volume
-  #          csi:
-  #            driver: secrets-store-gke.csi.k8s.io
-  #            readOnly: true
-  #            volumeAttributes:
-  #              secretProviderClass: mlflow-exposed-auth-bypass-secret-provider
+  podTemplate:
+    template:
+      spec:
+        containers:
+          - name: challenge
+            volumeMounts:
+              - name: flag-volume
+                mountPath: "/chroot/flag"
+        serviceAccountName: secret-readonly-sa
+        volumes:
+          - name: flag-volume
+            csi:
+              driver: secrets-store-gke.csi.k8s.io
+              readOnly: true
+              volumeAttributes:
+                secretProviderClass: mlflow-exposed-auth-bypass-secret-provider
   healthcheck:
     # TIP: disable the healthcheck during development
     enabled: false
