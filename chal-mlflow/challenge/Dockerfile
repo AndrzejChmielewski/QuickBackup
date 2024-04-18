@@ -19,7 +19,9 @@ RUN pip install mlflow
 RUN mkdir -p /.mlflow 
 ADD start.sh /start.sh
 RUN chmod +x /start.sh
-#RUN chown -Rc user /.mlflow
+RUN mkdir -p /logs
+RUN touch /logs/log
+RUN chmod -R +777 /logs
 
 ADD basic_auth.db /
 
@@ -31,21 +33,16 @@ RUN apt-get install socat -y --force-yes; exit 0
 
 FROM gcr.io/kctf-docker/challenge@sha256:0f7d757bcda470c3bbc063606335b915e03795d72ba1d8fdb6f0f9ff3757364f
 
-#VOLUME /chroot/.mlflow
 VOLUME /chroot/mlruns
 
 COPY --from=chroot / /chroot
-#RUN chown -Rc user /chroot/usr/local/lib/python3.10/site-packages/mlflow/server/js/build/
+
+VOLUME /chroot/logs
 VOLUME /chroot/usr/local/lib/python3.10/site-packages/mlflow/server/js/build/
 
 COPY nsjail.cfg /home/user/nsjail.cfg
 
-#CMD kctf_setup \
-#    && (kctf_drop_privs nsjail --config /home/user/nsjail.cfg --port 1337 -- /start.sh)
-
-#CMD kctf_setup \
-#    && kctf_drop_privs nsjail -E ROOTFLAG=$(cat /flag/flag-root.txt) --config /home/user/nsjail.cfg --port 1337 -- /start.sh
-
 CMD sed -i "1 a$(cat /flag/flag.txt)" /chroot/usr/local/lib/python3.10/site-packages/mlflow/server/js/build/index.html; \
     kctf_setup \
-    && kctf_drop_privs nsjail -E ROOTFLAG=$(cat /flag/flag-root.txt) --config /home/user/nsjail.cfg --port 1337 -- /start.sh
+    && kctf_drop_privs nsjail -E ROOTFLAG=$(cat /flag/flag-root.txt) --config /home/user/nsjail.cfg --port 1337 -- /start.sh & \
+    tail -f /chroot/logs/log
