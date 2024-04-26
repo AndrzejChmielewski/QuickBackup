@@ -30,8 +30,6 @@ RUN apt-get update \
     autoconf \
     vim
 
-#RUN docker-php-ext-install mysqli mbstring pdo pdo_mysql tokenizer xml
-
 # Install Laravel dependencies
 RUN apt-get install -y \
         libfreetype6-dev \
@@ -39,11 +37,6 @@ RUN apt-get install -y \
         zlib1g-dev \
         unzip \
         git
-
-#RUN docker-php-ext-install iconv mbstring \
-#    && docker-php-ext-install zip \
-#    && docker-php-ext-configure gd --with-freetype-dir=/usr/include/ --with-jpeg-dir=/usr/include/ \
-#    && docker-php-ext-install gd
 
 # Install composer, a package manager for PHP.
 RUN curl -sS https://getcomposer.org/installer | php \
@@ -56,6 +49,7 @@ RUN git clone https://github.com/laravel/laravel.git $APP_ROOT \
     && cd $APP_ROOT \
     && $COMPOSER_BIN install
 
+#Volume laravel storage
 VOLUME /var/www/html/laravel/storage
 
 # Add a basic route
