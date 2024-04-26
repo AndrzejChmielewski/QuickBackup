@@ -28,6 +28,6 @@ spec:
                 secretProviderClass: mlflow-exposed-auth-bypass-secret-provider
   healthcheck:
     # TIP: disable the healthcheck during development
-    enabled: false
-    image: kind/healthcheck:4fe195bd20058949d07c33f1f9d7343a432c38c1a43fb77f8357e20ed9b25f33
-  image: europe-west4-docker.pkg.dev/internet-ctf/challenges/challenge:eefe6227cf6f6344dcb634a5df8003c25a5811ddbb67507245f8a5f4d806efef
+    enabled: true
+    image: europe-west4-docker.pkg.dev/internet-ctf/challenges/healthcheck:4442a717cb946c578e20031441f1d3c9aa479b225de1e58c1b6179ae7416fc62
+  image: europe-west4-docker.pkg.dev/internet-ctf/challenges/challenge:93a6348b1eb015a16f1339875572ff979370f79912822dc830ef5b4e3d701096

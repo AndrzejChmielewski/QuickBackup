@@ -18,14 +18,13 @@ import requests
 
 mlflow_url = "http://localhost:1337"  
 
-# Endpoint to check the MLflow server health
 health_endpoint = mlflow_url + "/health"
 
 response = requests.get(health_endpoint)
 
 if response.status_code == 200:
     print("MLflow server is healthy")
-    exit(0)  # Success, MLflow server is running
+    exit(0) 
 else:
     print("MLflow server is not healthy")
-    exit(1)  # Failure, MLflow server is not running or not accessible
+    exit(1)  
