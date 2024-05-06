@@ -11,55 +11,63 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-FROM php:latest
+FROM php:latest as chroot
 
-ENV COMPOSER_BIN /usr/local/bin/composer/composer.phar
+RUN /usr/sbin/useradd --no-create-home -u 1000 user
+
+COPY start.sh /usr/local/bin/start.sh
+RUN chmod +x /usr/local/bin/start.sh
+
 ENV APP_ROOT /var/www/html/laravel
 ENV ROUTES_DIR $APP_ROOT/routes
+ENV DEBIAN_FRONTEND=noninteractive
+ENV COMPOSER_BIN /usr/local/bin/composer/composer.phar
 
-RUN apt-get update && apt-get install -y libonig-dev
-RUN apt-get update && apt-get install -y libzip-dev
-RUN apt-get update \
-    && apt-get install -y autoconf pkg-config libssl-dev wget \
+RUN apt-get update && apt-get install -y \
+    libonig-dev \
+    libzip-dev \
+    autoconf \
+    pkg-config \
+    libssl-dev \
+    wget \
     curl \
     git \
-    grep \
-    nginx \
-    libmemcached-dev \
-    libxml2-dev \
-    autoconf \
-    vim
+    libfreetype6-dev \
+    libjpeg62-turbo-dev \
+    zlib1g-dev \
+    unzip
 
-# Install Laravel dependencies
-RUN apt-get install -y \
-        libfreetype6-dev \
-        libjpeg62-turbo-dev \
-        zlib1g-dev \
-        unzip \
-        git
+RUN mkdir -p /home/user
 
-# Install composer, a package manager for PHP.
 RUN curl -sS https://getcomposer.org/installer | php \
     && mkdir -p /usr/local/bin/composer \
     && mv composer.phar $COMPOSER_BIN \
     && $COMPOSER_BIN self-update
 
-# Clone the latest laravel/laravel repo
 RUN git clone https://github.com/laravel/laravel.git $APP_ROOT \
     && cd $APP_ROOT \
     && $COMPOSER_BIN install
 
-#Volume laravel storage
+
 VOLUME /var/www/html/laravel/storage
 
-# Add a basic route
-RUN mkdir -p $ROUTES_DIR \
-    && echo "Route::get('/', function() {return view('welcome');});" >> $ROUTES_DIR/web.php
+RUN mkdir -p $ROUTES_DIR
 
-# Fix up local .env file
-RUN cp $APP_ROOT/.env.example $APP_ROOT/.env \
-    && sed -i -e "s/APP_KEY=.*$/APP_KEY=base64:your-base64-encoded-key-here/g" $APP_ROOT/.env \
-    && echo "WARNING: USING HARD CODED APP_KEY" && grep "^APP_KEY" $APP_ROOT/.env
+RUN echo "Route::get('/', function() {return view('welcome');});" >> $ROUTES_DIR/web.php
 
-EXPOSE 8000 8000
-ENTRYPOINT ["/usr/local/bin/php", "/var/www/html/laravel/artisan", "serve", "--host=0.0.0.0"]
+RUN cp /var/www/html/laravel/.env.example /var/www/html/laravel/.env \
+    && sed -i -e "s/APP_KEY=.*$/APP_KEY=base64:your-base64-encoded-key-here/g" /var/www/html/laravel/.env
+
+FROM gcr.io/kctf-docker/challenge@sha256:0f7d757bcda470c3bbc063606335b915e03795d72ba1d8fdb6f0f9ff3757364f
+# Copy files from chroot image
+COPY --from=chroot / /chroot
+RUN chown -Rc user /chroot/home/user
+VOLUME /chroot/home/user/
+
+# Copy nsjail configuration
+COPY nsjail.cfg /home/user/nsjail.cfg
+
+CMD kctf_setup \
+    && (kctf_drop_privs nsjail --config /home/user/nsjail.cfg --port 8000 -- /usr/local/bin/start.sh)
+
+#ENTRYPOINT ["/usr/local/bin/php", "/var/www/html/laravel/artisan", "serve", "--host=0.0.0.0"]
