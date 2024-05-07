@@ -7,7 +7,10 @@ spec:
   powDifficultySeconds: 0
   network:
     public: false
+    #ports:
+    #  - protocol: "TCP"
+    #    targetPort: 8000
   healthcheck:
     # TIP: disable the healthcheck during development
     enabled: false
-  image: europe-west4-docker.pkg.dev/internet-ctf/challenges/challenge:87b4705228d66cc60ae37e308662e0d3ec12568a2b1c55e4d299fad655fa7c2f
+  image: europe-west4-docker.pkg.dev/internet-ctf/challenges/challenge:7830be52375e0667b2dc99f7e901b127c9b52ba39392afcc3fbafceea78bb32e
