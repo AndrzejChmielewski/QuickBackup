@@ -7,10 +7,23 @@ spec:
   powDifficultySeconds: 0
   network:
     public: false
-    #ports:
-    #  - protocol: "TCP"
-    #    targetPort: 8000
+  podTemplate:
+    template:
+      spec:
+        containers:
+          - name: challenge
+            volumeMounts:
+              - name: flag-volume
+                mountPath: "/chroot/flag"
+        serviceAccountName: secret-readonly-sa
+        volumes:
+          - name: flag-volume
+            csi:
+              driver: secrets-store-gke.csi.k8s.io
+              readOnly: true
+              volumeAttributes:
+                secretProviderClass: laravel-latest-secret-provider
   healthcheck:
     # TIP: disable the healthcheck during development
     enabled: false
-  image: europe-west4-docker.pkg.dev/internet-ctf/challenges/challenge:7830be52375e0667b2dc99f7e901b127c9b52ba39392afcc3fbafceea78bb32e
+  image: europe-west4-docker.pkg.dev/internet-ctf/challenges/challenge:4462e097896b2b286b9225ec8fb26a05c71122a642b844a65fd460c33db48f0c
