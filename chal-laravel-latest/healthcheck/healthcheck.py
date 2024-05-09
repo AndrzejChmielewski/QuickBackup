@@ -13,24 +13,26 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
+import requests
+import time
 
-import pwnlib.tubes
+def healthcheck():
+    url = "http://localhost:1337"
+    retries = 3
+    delay = 5
 
-def handle_pow(r):
-    print(r.recvuntil(b'python3 '))
-    print(r.recvuntil(b' solve '))
-    challenge = r.recvline().decode('ascii').strip()
-    p = pwnlib.tubes.process.process(['kctf_bypass_pow', challenge])
-    solution = p.readall().strip()
-    r.sendline(solution)
-    print(r.recvuntil(b'Correct\n'))
+    for i in range(retries):
+        response = requests.get(url)
+        if response.status_code == 200:
+            print("Laravel server is healthy")
+            return 0
+        else:
+            print(f"Laravel server is not healthy (attempt {i+1}/{retries})")
+            print(f"Status code: {response.status_code}")
+            print(f"Response: {response.text}")
+            time.sleep(delay)
 
-r = pwnlib.tubes.remote.remote('127.0.0.1', 1337)
-print(r.recvuntil('== proof-of-work: '))
-if r.recvline().startswith(b'enabled'):
-    handle_pow(r)
+    print("Healthcheck failed after maximum retries")
+    return 1
 
-print(r.recvuntil(b'CTF{'))
-print(r.recvuntil(b'}'))
-
-exit(0)
+healthcheck()
