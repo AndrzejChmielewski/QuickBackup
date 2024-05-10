@@ -14,25 +14,12 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 import requests
-import time
 
-def healthcheck():
-    url = "http://localhost:1337"
-    retries = 3
-    delay = 5
+response = requests.get("http://localhost:1337")
 
-    for i in range(retries):
-        response = requests.get(url)
-        if response.status_code == 200:
-            print("Laravel server is healthy")
-            return 0
-        else:
-            print(f"Laravel server is not healthy (attempt {i+1}/{retries})")
-            print(f"Status code: {response.status_code}")
-            print(f"Response: {response.text}")
-            time.sleep(delay)
-
-    print("Healthcheck failed after maximum retries")
-    return 1
-
-healthcheck()
+if response.status_code == 200:
+    print("Laravel server is healthy")
+    exit(0)  
+else:
+    print("Laravel server is not healthy")
+    exit(1) 

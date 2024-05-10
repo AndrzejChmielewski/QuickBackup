@@ -28,6 +28,6 @@ spec:
                 secretProviderClass: laravel-latest-secret-provider
   healthcheck:
     # TIP: disable the healthcheck during development
-    enabled: false
-    image: europe-west4-docker.pkg.dev/internet-ctf/challenges/healthcheck:1dd9ef2224879aa274fc4048b84f5fcff6b52d85bde06dd6c370a410c1e77838
-  image: europe-west4-docker.pkg.dev/internet-ctf/challenges/challenge:6ffefbb3ae56722fd2eb16f31dfbdb632feeb81169f1690fa7ade153025b9b12
+    enabled: true
+    image: europe-west4-docker.pkg.dev/internet-ctf/challenges/healthcheck:e8658cc92f4a282705b063513f139027d9a668b75a5383208b5f5c4f74bb563e
+  image: europe-west4-docker.pkg.dev/internet-ctf/challenges/challenge:1d187299d86f086f8a8372fb69210f8ac881edf25fe06a2c8bfda017f5572919
