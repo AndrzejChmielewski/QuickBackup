@@ -11,38 +11,27 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-FROM duonghuuphuc/tomcat-8.5.32:latest
+FROM duonghuuphuc/tomcat-8.5.32:latest as chroot
 
-#RUN touch /error.log&& 
-  #echo "tail -f /error.log" >> /run.sh
-  
-#VOLUME /tmp/
-#VOLUME /etc/init.d/
-#VOLUME /var/lib/mysql/
-#VOLUME /var/log/apache2/
-#VOLUME /var/www/
-#VOLUME /var/lock/
+RUN /usr/sbin/useradd --no-create-home -u 1000 user
 
-
-VOLUME /usr/local/tomcat
 RUN chmod -R 777 /usr/local/tomcat
-COPY index.html /usr/local/tomcat/webapps/ROOT/
+COPY start.sh /usr/local/bin/start.sh
+RUN chmod +x /usr/local/bin/start.sh
+RUN mkdir -p /home/user
 
-#CMD ["sh", "-c", "/run.sh"]
-CMD ["catalina.sh", "run"]
-#RUN /usr/sbin/useradd --no-create-home -u 1000 user
+RUN echo 'deb http://archive.debian.org/debian/ stretch main' > /etc/apt/sources.list
+RUN apt-get update; exit 0
+RUN apt-get install socat -y --force-yes; exit 0
 
-#COPY flag /
-#COPY chal /home/user/
+FROM gcr.io/kctf-docker/challenge@sha256:0f7d757bcda470c3bbc063606335b915e03795d72ba1d8fdb6f0f9ff3757364f
 
-#FROM gcr.io/kctf-docker/challenge@sha256:0f7d757bcda470c3bbc063606335b915e03795d72ba1d8fdb6f0f9ff3757364f
+COPY --from=chroot / /chroot
+RUN chown -Rc user /chroot/home/user
+VOLUME /chroot/home/user/
+VOLUME /chroot/usr/local/tomcat
 
-#COPY --from=chroot / /chroot#
+COPY nsjail.cfg /home/user/nsjail.cfg
 
-#COPY nsjail.cfg /home/user/
-
-#CMD kctf_setup && \
- #   kctf_drop_privs \
- #   socat \
-  #    TCP-LISTEN:1337,reuseaddr,fork \
- #     EXEC:"kctf_pow nsjail --config /home/user/nsjail.cfg -- /home/user/chal"
+CMD kctf_setup \
+    && (kctf_drop_privs nsjail --config /home/user/nsjail.cfg --port 1337 -- /usr/local/bin/start.sh)
