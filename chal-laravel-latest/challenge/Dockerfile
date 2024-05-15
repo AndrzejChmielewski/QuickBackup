@@ -40,6 +40,7 @@ RUN apt-get update && apt-get install -y \
 
 RUN docker-php-ext-configure pcntl --enable-pcntl \
     && docker-php-ext-install pcntl
+
 RUN curl -sS https://getcomposer.org/installer | php \
     && mkdir -p /usr/local/bin/composer \
     && mv composer.phar $COMPOSER_BIN \
@@ -50,26 +51,22 @@ RUN git clone https://github.com/laravel/laravel.git $APP_ROOT \
     && $COMPOSER_BIN global require laravel/installer \
     && $COMPOSER_BIN create-project laravel/laravel laravel-app \
     && cd laravel-app \
+    && $COMPOSER_BIN dumpautoload \
     && $COMPOSER_BIN require laravel/pail
 
+RUN mkdir -p /var/www/html/laravel/laravel-app/storage/pail
 RUN cd /var/www/html/laravel/laravel-app/storage/ \
     && mkdir -p framework/{sessions,views,cache} \
-    && mkdir -p framework/pail \
     && chmod -R 775 framework
 
-RUN mkdir -p /home/user && mkdir -p $ROUTES_DIR
-#RUN echo "Route::get('/', function() {return view('welcome');});" >> $ROUTES_DIR/web.php
-#RUN cp $APP_ROOT/.env.example $APP_ROOT/.env \
-#    && sed -i -e "s;^APP_KEY=.*$;APP_KEY=base64:9UZUmEfHhV7WXXYewtNRtCxAYdQt44IAgJUKXk2ehRk=;#" $APP_ROOT/.env \
-#    && echo "WARNING: USING HARD CODED APP_KEY" && grep "^APP_KEY" $APP_ROOT/.env
+RUN mkdir -p /home/user \
+    && mkdir -p $ROUTES_DIR
 
 FROM gcr.io/kctf-docker/challenge@sha256:0f7d757bcda470c3bbc063606335b915e03795d72ba1d8fdb6f0f9ff3757364f
 
 COPY --from=chroot / /chroot
 RUN chown -Rc user /chroot/home/user
 RUN chown -Rc user /chroot/var/www/html/laravel/laravel-app/database
-RUN chown -Rc user /chroot/var/www/html/laravel/laravel-app/vendor/laravel/pail/src
-#RUN chown -Rc user /chroot/var/www/html/laravel/laravel-app/storage
 VOLUME /chroot/logs
 VOLUME /chroot/home/user/
 VOLUME /chroot/var/www/html/laravel/
