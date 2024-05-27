@@ -10,24 +10,24 @@ spec:
     ports:
       - protocol: "TCP"
         targetPort: 1337
-        #  podTemplate:
-        #    template:
-        #      spec:
-        #        containers:
-        #          - name: challenge
-        #            volumeMounts:
-        #              - name: flag-volume
-        #                mountPath: "/chroot/flag"
-        #        serviceAccountName: secret-readonly-sa
-        #        volumes:
-        #          - name: flag-volume
-        #            csi:
-        #              driver: secrets-store-gke.csi.k8s.io
-        #              readOnly: true
-        #              volumeAttributes:
-        #                secretProviderClass: drupal-cve-2019-6340-secret-provider
+  podTemplate:
+    template:
+      spec:
+        containers:
+          - name: challenge
+            volumeMounts:
+              - name: flag-volume
+                mountPath: "/chroot/flag"
+        serviceAccountName: secret-readonly-sa
+        volumes:
+          - name: flag-volume
+            csi:
+              driver: secrets-store-gke.csi.k8s.io
+              readOnly: true
+              volumeAttributes:
+                secretProviderClass: drupal-latest-secret-provider
   healthcheck:
     # TIP: disable the healthcheck during development
     enabled: false
-    image: europe-west4-docker.pkg.dev/internet-ctf/challenges/healthcheck:d2e32f537395612b2a430700ac8076b6909bd3ee49817c5a5fa1491b8e0f3271
-  image: europe-west4-docker.pkg.dev/internet-ctf/challenges/challenge:b0224c633e61204422c4d7911ba38aac0bf7661792e3d2bb9e7b02834837d5ea
+    image: europe-west4-docker.pkg.dev/internet-ctf/challenges/healthcheck:177ef56beea814dcb439485e5fa57eb290b16c81e5b75083f975aef027715571
+  image: europe-west4-docker.pkg.dev/internet-ctf/challenges/challenge:4328c9c275fe247b041723a306be4ae9f4a71a72b1ca8495ffa9af3d6c32b2e9

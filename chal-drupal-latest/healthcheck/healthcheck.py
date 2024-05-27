@@ -14,9 +14,13 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import pwnlib.util.web
+import requests
 
-if b"Drupal" in pwnlib.util.web.wget("http://localhost:1337/"):
-      exit(0)
+response = requests.get("http://localhost:1337")
 
-exit(1)
+if response.status_code == 200:
+    print("Drupal server is healthy")
+    exit(0)  
+else:
+    print("Drupal server is not healthy")
+    exit(1) 

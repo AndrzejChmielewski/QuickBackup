@@ -49,4 +49,4 @@ VOLUME /chroot/opt/drupal/web/sites
 COPY nsjail.cfg /home/user/nsjail.cfg
    
 CMD kctf_setup \
-	&& kctf_drop_privs nsjail --config /home/user/nsjail.cfg --port 1337 -- /start.sh
+	&& kctf_drop_privs nsjail -E AUTHBYPASS=$(cat /flag/flag-exposed-auth-bypass.txt)  --config /home/user/nsjail.cfg --port 1337 -- /start.sh
