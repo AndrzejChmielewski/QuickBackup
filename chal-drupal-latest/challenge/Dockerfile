@@ -31,7 +31,7 @@ RUN drush site-install --db-url="sqlite://sites/default/files/.ht.sqlite" --site
 # Install socat
 RUN echo 'deb http://archive.debian.org/debian/ stretch main' > /etc/apt/sources.list
 RUN apt-get update; exit 0
-RUN apt-get install socat -y --force-yes; exit 0
+RUN apt-get install socat sqlite3 -y --force-yes; exit 0
 # Configure 8080 port
 RUN sed -i '5s/80/8080/' /etc/apache2/ports.conf
 RUN sed -i '1s/80/8080/' /etc/apache2/sites-enabled/000-default.conf
@@ -48,5 +48,6 @@ VOLUME /chroot/opt/drupal/web/sites
 
 COPY nsjail.cfg /home/user/nsjail.cfg
    
-CMD kctf_setup \
-	&& kctf_drop_privs nsjail -E AUTHBYPASS=$(cat /flag/flag-exposed-auth-bypass.txt)  --config /home/user/nsjail.cfg --port 1337 -- /start.sh
+CMD sed -i "302s/.*/'#markup' => '<h4 class=\"label\">'. t('Memberadsdasw for'). '</h4> '. \Drupal::service('date.formatter')->formatTimeDiffSince(\$account->getCreatedTime()),/" /chroot/opt/drupal/web/core/modules/user/user.module; \
+    kctf_setup \
+	&& kctf_drop_privs nsjail -E PASSWORD=$(cat /flag/password.txt) -E AUTHBYPASS=$(cat /flag/flag-exposed-auth-bypass.txt)  --config /home/user/nsjail.cfg --port 1337 -- /start.sh
