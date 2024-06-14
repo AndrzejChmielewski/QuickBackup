@@ -48,6 +48,5 @@ VOLUME /chroot/opt/drupal/web/sites
 
 COPY nsjail.cfg /home/user/nsjail.cfg
    
-CMD sed -i "302s/.*/'#markup' => '<h4 class=\"label\">'. t('Memberadsdasw for'). '</h4> '. \Drupal::service('date.formatter')->formatTimeDiffSince(\$account->getCreatedTime()),/" /chroot/opt/drupal/web/core/modules/user/user.module; \
-    kctf_setup \
+CMD kctf_setup \
 	&& kctf_drop_privs nsjail -E PASSWORD=$(cat /flag/password.txt) -E AUTHBYPASS=$(cat /flag/flag-exposed-auth-bypass.txt)  --config /home/user/nsjail.cfg --port 1337 -- /start.sh
