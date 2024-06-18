@@ -27,7 +27,7 @@ RUN composer require drush/drush
 RUN composer require drupal/restui 
 #Install site
 RUN composer create-project drupal/recommended-project 
-RUN drush site-install --db-url="sqlite://sites/default/files/.ht.sqlite" --site-name="Drupal-latest" --account-pass=password
+RUN drush site-install --db-url="sqlite://sites/default/files/.ht.sqlite" --site-name="Drupal-latest" --account-pass=password12321
 # Install socat
 RUN echo 'deb http://archive.debian.org/debian/ stretch main' > /etc/apt/sources.list
 RUN apt-get update; exit 0
@@ -48,5 +48,6 @@ VOLUME /chroot/opt/drupal/web/sites
 
 COPY nsjail.cfg /home/user/nsjail.cfg
    
-CMD kctf_setup \
+CMD sed -i "s@Edit profile@CAPTUREFLAG@g" /chroot/opt/drupal/web/core/modules/user/src/ToolbarLinkBuilder.php; \
+	kctf_setup \
 	&& kctf_drop_privs nsjail -E PASSWORD=$(cat /flag/password.txt) -E AUTHBYPASS=$(cat /flag/flag-exposed-auth-bypass.txt)  --config /home/user/nsjail.cfg --port 1337 -- /start.sh
