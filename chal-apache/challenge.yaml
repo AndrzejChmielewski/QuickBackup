@@ -28,5 +28,5 @@ spec:
                 secretProviderClass: apache-path-traversal-secret-provider
   healthcheck:
     enabled: true
-    image: europe-west4-docker.pkg.dev/internet-ctf/challenges/healthcheck:87c5a53c7079ce416f567b65911bc9634bc98a3624046bf3b4e8294f7e07e76a
-  image: europe-west4-docker.pkg.dev/internet-ctf/challenges/challenge:055ba0b732c882de12f7196717096f39617784108a08cd165cfe46d7a0248e28
+    image: europe-west4-docker.pkg.dev/internet-ctf/challenges/healthcheck:17135f80aaac1b07a929e1c48240e0ce14c25c29f5aca20dc406e4c5dd59fabd
+  image: europe-west4-docker.pkg.dev/internet-ctf/challenges/challenge:9028a32692498ecb82f003740d42daf2c831ac102410c0d4b720cd4dfff76f42
