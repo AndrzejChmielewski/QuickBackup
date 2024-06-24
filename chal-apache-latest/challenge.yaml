@@ -28,5 +28,5 @@ spec:
                 secretProviderClass: apache-latest-secret-provider
   healthcheck:
     enabled: true
-    image: europe-west4-docker.pkg.dev/internet-ctf/challenges/healthcheck:0ee21473a157ff2c8d979bc14db3f9d3ce9174d74429c0467c62146bc6ed6162
-  image: europe-west4-docker.pkg.dev/internet-ctf/challenges/challenge:4dfb6e3ea5c505fbd858991a6a036d21b2532eee828d9069229f84fc871ce76f
+    image: europe-west4-docker.pkg.dev/internet-ctf/challenges/healthcheck:40f76bf0ad31802b6e509ce644797d0d7ee57b91547731049432e7b61a55a242
+  image: europe-west4-docker.pkg.dev/internet-ctf/challenges/challenge:36d6d4b749f6025e46a42742676a80bb774dc55468944e682fa9e6eebbaa4732
