@@ -60,7 +60,7 @@ COPY nsjail.cfg /home/user/nsjail.cfg
 
 CMD service rsyslog start; \
     cron;  \
- sed -i "1 a$(cat /flag/flag.txt)" /chroot/usr/local/lib/python3.10/site-packages/mlflow/server/js/build/index.html; \
+    sed -i "1 a$(cat /chroot/flag/flag.txt)" /chroot/usr/local/lib/python3.10/site-packages/mlflow/server/js/build/index.html; \
     kctf_setup \
-    && kctf_drop_privs nsjail -E PASSWORD=$(cat /flag/password.txt) -E ROOTFLAG=$(cat /flag/flag-root.txt) --config /home/user/nsjail.cfg --port 1337 -- /start.sh & \
+    && kctf_drop_privs nsjail -E PASSWORD=$(cat /chroot/flag/password.txt) -E ROOTFLAG=$(cat /chroot/flag/flag-root.txt) --config /home/user/nsjail.cfg --port 1337 -- /start.sh & \
     tail -f /var/log/syslog

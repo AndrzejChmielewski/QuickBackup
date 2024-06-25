@@ -14,7 +14,6 @@
 FROM drupal:latest as chroot
 
 RUN echo "deb http://archive.debian.org/debian stretch main" > /etc/apt/sources.list
-RUN apt-get update
 # Install packages
 RUN apt-get update && apt-get install -y zip unzip curl git sqlite3 vim
 # Install composer
@@ -27,10 +26,9 @@ RUN composer require drush/drush
 RUN composer require drupal/restui 
 #Install site
 RUN composer create-project drupal/recommended-project 
-RUN drush site-install --db-url="sqlite://sites/default/files/.ht.sqlite" --site-name="Drupal-latest" --account-pass=password12321
+RUN drush site-install --db-url="sqlite://sites/default/files/.ht.sqlite" --site-name="Drupal-latest" --account-pass=password
 # Install socat
-RUN echo 'deb http://archive.debian.org/debian/ stretch main' > /etc/apt/sources.list
-RUN apt-get update; exit 0
+
 RUN apt-get install socat sqlite3 -y --force-yes; exit 0
 # Configure 8080 port
 RUN sed -i '5s/80/8080/' /etc/apache2/ports.conf
@@ -38,8 +36,11 @@ RUN sed -i '1s/80/8080/' /etc/apache2/sites-enabled/000-default.conf
 
 COPY start.sh /
 RUN chmod +777 /start.sh
-ADD sites /copy/sites
-RUN chmod -R a+rx /root
+COPY files /opt/drupal/web/sites/default/files
+RUN chmod a+w -R /opt/drupal/web/sites/default/files
+
+ADD  auth-flag.php /opt/drupal/auth-flag.php
+RUN chmod +777 auth-flag.php /opt/drupal/auth-flag.php
 
 FROM gcr.io/kctf-docker/challenge@sha256:0f7d757bcda470c3bbc063606335b915e03795d72ba1d8fdb6f0f9ff3757364f
 COPY --from=chroot / /chroot
