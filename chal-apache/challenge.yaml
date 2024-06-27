@@ -29,4 +29,4 @@ spec:
   healthcheck:
     enabled: true
     image: europe-west4-docker.pkg.dev/internet-ctf/challenges/healthcheck:17135f80aaac1b07a929e1c48240e0ce14c25c29f5aca20dc406e4c5dd59fabd
-  image: europe-west4-docker.pkg.dev/internet-ctf/challenges/challenge:f9766b151a21b90da50c903c18b24cba693a7443771f79766698adaaf1eff249
+  image: europe-west4-docker.pkg.dev/internet-ctf/challenges/challenge:baaf72ce19299fa8fffad60a2680aa909ff5e6584d99ff519d58444c6e255dfa
