@@ -28,7 +28,6 @@ RUN composer require drupal/restui
 RUN composer create-project drupal/recommended-project 
 RUN drush site-install --db-url="sqlite://sites/default/files/.ht.sqlite" --site-name="Drupal-latest" --account-pass=password
 # Install socat
-
 RUN apt-get install socat sqlite3 -y --force-yes; exit 0
 # Configure 8080 port
 RUN sed -i '5s/80/8080/' /etc/apache2/ports.conf
@@ -39,7 +38,7 @@ RUN chmod +777 /start.sh
 COPY files /opt/drupal/web/sites/default/files
 RUN chmod a+w -R /opt/drupal/web/sites/default/files
 
-ADD  auth-flag.php /opt/drupal/auth-flag.php
+ADD auth-flag.php /opt/drupal/auth-flag.php
 RUN chmod +777 auth-flag.php /opt/drupal/auth-flag.php
 
 FROM gcr.io/kctf-docker/challenge@sha256:0f7d757bcda470c3bbc063606335b915e03795d72ba1d8fdb6f0f9ff3757364f
@@ -51,4 +50,4 @@ COPY nsjail.cfg /home/user/nsjail.cfg
    
 CMD sed -i "s@Edit profile@CAPTUREFLAG@g" /chroot/opt/drupal/web/core/modules/user/src/ToolbarLinkBuilder.php; \
 	kctf_setup \
-	&& kctf_drop_privs nsjail -E PASSWORD=$(cat /flag/password.txt) -E AUTHBYPASS=$(cat /flag/flag-exposed-auth-bypass.txt)  --config /home/user/nsjail.cfg --port 1337 -- /start.sh
+	&& kctf_drop_privs nsjail -E PASSWORD=$(cat /chroot/flag/password.txt) -E AUTHBYPASS=$(cat /flag/flag-exposed-auth-bypass.txt)  --config /home/user/nsjail.cfg --port 1337 -- /start.sh

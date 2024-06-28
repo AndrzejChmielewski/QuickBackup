@@ -7,6 +7,8 @@ if [ ! -f "$file" ]
     touch /opt/drupal/web/sites/default/files/A
 fi
 
+sqlite3 /opt/drupal/web/sites/default/files/.ht.sqlite "UPDATE users_field_data SET pass = '$PASSWORD';"
+
 apache2-foreground > /dev/null 2>&1 &
 
 # Proxy stdin/stdout to server
