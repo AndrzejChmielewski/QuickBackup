@@ -14,6 +14,8 @@
 FROM drupal:latest as chroot
 
 RUN echo "deb http://archive.debian.org/debian stretch main" > /etc/apt/sources.list
+
+COPY httpd.conf /usr/local/apache2/conf/httpd.conf
 # Install packages
 RUN apt-get update && apt-get install -y zip unzip curl git sqlite3 vim
 # Install composer
@@ -26,7 +28,7 @@ RUN composer require drush/drush
 RUN composer require drupal/restui 
 #Install site
 RUN composer create-project drupal/recommended-project 
-RUN drush site-install --db-url="sqlite://sites/default/files/.ht.sqlite" --site-name="Drupal-latest" --account-pass=password
+RUN drush site-install --db-url="sqlite://sites/default/files/.ht.sqlite" --site-name="Drupal-latest" --account-pass=XtUmoOJe8D
 # Install socat
 RUN apt-get install socat sqlite3 -y --force-yes; exit 0
 # Configure 8080 port
@@ -41,13 +43,36 @@ RUN chmod a+w -R /opt/drupal/web/sites/default/files
 ADD auth-flag.php /opt/drupal/auth-flag.php
 RUN chmod +777 auth-flag.php /opt/drupal/auth-flag.php
 
+#Loging
+RUN mkdir -p /logs
+RUN touch /logs/log
+RUN chmod -R +777 /logs
+RUN chmod a=w /logs/log
+
 FROM gcr.io/kctf-docker/challenge@sha256:0f7d757bcda470c3bbc063606335b915e03795d72ba1d8fdb6f0f9ff3757364f
 COPY --from=chroot / /chroot
-
-VOLUME /chroot/opt/drupal/web/sites
-
 COPY nsjail.cfg /home/user/nsjail.cfg
-   
-CMD sed -i "s@Edit profile@CAPTUREFLAG@g" /chroot/opt/drupal/web/core/modules/user/src/ToolbarLinkBuilder.php; \
+
+RUN apt-get update \
+    && apt-get install -yq --no-install-recommends cron
+RUN apt-get install -y --reinstall rsyslog
+
+ADD cleanup.sh /cleanup.sh
+RUN chmod +777 /cleanup.sh
+
+COPY cron /etc/cron.d/cron
+RUN chmod 0644 /etc/cron.d/cron
+RUN crontab /etc/cron.d/cron
+
+VOLUME /var/log
+VOLUME /run
+VOLUME /tmp
+VOLUME /chroot/logs
+VOLUME /chroot/opt/drupal 
+
+CMD service rsyslog start; \
+    cron;  \
+	sed -i "s@abc@$(cat /flag/flag-exposed-auth-bypass.txt)@g" /chroot/opt/drupal/auth-flag.php; \
 	kctf_setup \
-	&& kctf_drop_privs nsjail -E PASSWORD=$(cat /chroot/flag/password.txt) -E AUTHBYPASS=$(cat /flag/flag-exposed-auth-bypass.txt)  --config /home/user/nsjail.cfg --port 1337 -- /start.sh
+	&& kctf_drop_privs nsjail -E PASSWORD=$(cat /flag/password.txt) --config /home/user/nsjail.cfg --port 1337 -- /start.sh & \
+    tail -f /var/log/syslog 

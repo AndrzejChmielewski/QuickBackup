@@ -6,7 +6,7 @@ spec:
   deployed: true
   powDifficultySeconds: 0
   network:
-    public: false
+    public: true
     ports:
       - protocol: "TCP"
         targetPort: 1337
@@ -17,7 +17,7 @@ spec:
           - name: challenge
             volumeMounts:
               - name: flag-volume
-                mountPath: "/chroot/flag"
+                mountPath: "/flag"
         serviceAccountName: secret-readonly-sa
         volumes:
           - name: flag-volume
@@ -28,6 +28,6 @@ spec:
                 secretProviderClass: drupal-latest-secret-provider
   healthcheck:
     # TIP: disable the healthcheck during development
-    enabled: false
-    image: europe-west4-docker.pkg.dev/internet-ctf/challenges/healthcheck:177ef56beea814dcb439485e5fa57eb290b16c81e5b75083f975aef027715571
-  image: europe-west4-docker.pkg.dev/internet-ctf/challenges/challenge:165be7a863ee09b6e19ff7eece45d7b2979de1605c6fe960e9604e97fe29bdef
+    enabled: true
+    image: europe-west4-docker.pkg.dev/internet-ctf/challenges/healthcheck:ba5c93905be7eda296a800e91482f9644217ef8e2897588ae6a77c2602f6f93b
+  image: europe-west4-docker.pkg.dev/internet-ctf/challenges/challenge:fc83702113e612fb70d6ef9f15b679df3106bd99aa06dc5fb0482fe2c4ab70a9
