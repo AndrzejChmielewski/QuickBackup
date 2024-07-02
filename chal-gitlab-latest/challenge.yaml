@@ -1,0 +1,13 @@
+apiVersion: kctf.dev/v1
+kind: Challenge
+metadata:
+  name: chal-gitlab-latest
+spec:
+  deployed: true
+  powDifficultySeconds: 0
+  network:
+    public: false
+  healthcheck:
+    # TIP: disable the healthcheck during development
+    enabled: false
+  image: europe-west4-docker.pkg.dev/internet-ctf/challenges/challenge:b8857e9c1612faf271e4d5145d628f4f1c721167271e667a4eb86ad52b4008b1
