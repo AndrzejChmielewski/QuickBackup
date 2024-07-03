@@ -32,6 +32,8 @@ EXPOSE 80
 EXPOSE 443
 EXPOSE 22
 
+
+
 ## Create necessary directories and fix permissions
 #RUN mkdir -p /var/opt/gitlab /var/log/gitlab && \
 #    chown -R git:git /etc/gitlab /var/opt/gitlab /var/log/gitlab
