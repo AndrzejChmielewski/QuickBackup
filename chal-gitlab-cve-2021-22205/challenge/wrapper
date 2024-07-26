@@ -1,0 +1,11 @@
+#!/bin/bash
+# Wrapper script to handle signal, trigger runit, and reconfigure GitLab
+
+# Start runit
+runsvdir -P /opt/gitlab/service &
+
+# Reconfigure GitLab
+gitlab-ctl reconfigure
+
+# Keep the container running
+tail -f /dev/null
