@@ -26,8 +26,40 @@ spec:
               readOnly: true
               volumeAttributes:
                 secretProviderClass: drupal-latest-secret-provider
+      affinity:
+          nodeAffinity:
+            requiredDuringSchedulingIgnoredDuringExecution:
+              nodeSelectorTerms:
+                - matchExpressions:
+                    - key: kubernetes.io/os
+                      operator: In
+                      values:
+                        - linux
+            preferredDuringSchedulingIgnoredDuringExecution:
+              - weight: 50
+                preference:
+                  matchExpressions:
+                    - key: node
+                      operator: In
+                      values:
+                        - two
+              - weight: 50
+                preference:
+                  matchExpressions:
+                    - key: node
+                      operator: In
+                      values:
+                        - one
+              - weight: 75
+                preference:
+                  matchExpressions:
+                    - key: node
+                      operator: In
+                      values:
+                        - three 
+
   healthcheck:
     # TIP: disable the healthcheck during development
-    enabled: true
-    image: europe-west4-docker.pkg.dev/internet-ctf/challenges/healthcheck:ba5c93905be7eda296a800e91482f9644217ef8e2897588ae6a77c2602f6f93b
-  image: europe-west4-docker.pkg.dev/internet-ctf/challenges/challenge:ec9476fcac0352fbe53fd987767f85eeb0456f2a57b4eeb4743806a30aee2a9a
+    enabled: false
+    image: europe-west4-docker.pkg.dev/internet-ctf/challenges/healthcheck:9b45690eb9d372457395d526dfdfdbfb393bf00adef8fa80ec00555a003fd3d3
+  image: europe-west4-docker.pkg.dev/internet-ctf/challenges/challenge:25e699f93df50fc0076c273755cf65db7a3a79240da2cea2cdbe0684ee3132f9
