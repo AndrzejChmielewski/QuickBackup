@@ -26,7 +26,38 @@ spec:
               readOnly: true
               volumeAttributes:
                 secretProviderClass: apache-path-traversal-secret-provider
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+              - matchExpressions:
+                  - key: kubernetes.io/os
+                    operator: In
+                    values:
+                      - linux
+          preferredDuringSchedulingIgnoredDuringExecution:
+            - weight: 50
+              preference:
+                matchExpressions:
+                  - key: node
+                    operator: In
+                    values:
+                      - two
+            - weight: 50
+              preference:
+                matchExpressions:
+                  - key: node
+                    operator: In
+                    values:
+                      - one
+            - weight: 75
+              preference:
+                matchExpressions:
+                  - key: node
+                    operator: In
+                    values:
+                      - three
   healthcheck:
     enabled: true
-    image: europe-west4-docker.pkg.dev/internet-ctf/challenges/healthcheck:25b42619c9160e014bea3bee2ef53cd95cebff6c662fb772a723d941685e4812
-  image: europe-west4-docker.pkg.dev/internet-ctf/challenges/challenge:a69a5282c51260840819977ebad7fb5097cb20dac7790fef7099a23d6cded060
+    image: europe-west4-docker.pkg.dev/internet-ctf/challenges/healthcheck:69966c59a76cb2a01f390c74a10978271b4e54b600da2bbcb3f502dba64a4a91
+  image: europe-west4-docker.pkg.dev/internet-ctf/challenges/challenge:fd53a6ebc89c9c9341b9ec933f7beb9108c663604865b3b5b2a26dfc41d5efb3
