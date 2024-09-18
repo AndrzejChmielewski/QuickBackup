@@ -14,23 +14,13 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import pwnlib.tubes
+import requests
 
-def handle_pow(r):
-    print(r.recvuntil(b'python3 '))
-    print(r.recvuntil(b' solve '))
-    challenge = r.recvline().decode('ascii').strip()
-    p = pwnlib.tubes.process.process(['kctf_bypass_pow', challenge])
-    solution = p.readall().strip()
-    r.sendline(solution)
-    print(r.recvuntil(b'Correct\n'))
+response = requests.get("http://localhost:1337")
 
-r = pwnlib.tubes.remote.remote('127.0.0.1', 1337)
-print(r.recvuntil('== proof-of-work: '))
-if r.recvline().startswith(b'enabled'):
-    handle_pow(r)
-
-print(r.recvuntil(b'CTF{'))
-print(r.recvuntil(b'}'))
-
-exit(0)
+if response.status_code == 200:
+    print("Reverb server is healthy")
+    exit(0)  
+else:
+    print("Reverb server is not healthy")
+    exit(1) 
