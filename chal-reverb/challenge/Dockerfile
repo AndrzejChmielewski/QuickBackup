@@ -29,16 +29,15 @@ RUN pip3 install numpy --upgrade
 RUN pip3 install dm-tree       
 RUN pip3 install dm-reverb[tensorflow]
 RUN pip3 install tensorrt
+RUN pip3 install flask
 RUN pip3 install numpy --upgrade; pip3 install dm-tree; pip3 install dm-reverb[tensorflow]
 
-#Copy stuff
+#Copy
 RUN chmod +777 /home/user
 ADD script.py /home/user
 ADD app.py /home/user
-#ADD ping.py /home/user
 RUN chmod +777 /home/user/script.py
 RUN chmod +777 /home/user/app.py
-#RUN chmod +777 /home/user/ping.py
 RUN chmod +777 /dev/random
 RUN chmod +777 /dev/urandom
 
@@ -58,5 +57,5 @@ VOLUME /chroot/home/user
 COPY nsjail.cfg /home/user/
 
 CMD kctf_setup && \
-kctf_setup \
-&& kctf_drop_privs nsjail --config /home/user/nsjail.cfg --port 1337 -- /home/user/start.sh
+    kctf_setup \
+    && kctf_drop_privs nsjail --config /home/user/nsjail.cfg --port 1337 -- /home/user/start.sh

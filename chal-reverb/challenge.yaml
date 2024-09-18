@@ -7,7 +7,23 @@ spec:
   powDifficultySeconds: 0
   network:
     public: false
+  podTemplate:
+    template:
+      spec:
+        containers:
+          - name: challenge
+            volumeMounts:
+              - name: flag-volume
+                mountPath: "/chroot/flag"
+        serviceAccountName: secret-readonly-sa
+        volumes:
+          - name: flag-volume
+            csi:
+              driver: secrets-store-gke.csi.k8s.io
+              readOnly: true
+              volumeAttributes:
+                secretProviderClass: reverb-secret-provider
   healthcheck:
     # TIP: disable the healthcheck during development
     enabled: false
-  image: europe-west4-docker.pkg.dev/internet-ctf/challenges/challenge:45b97eed75e7ac8cc8289d03b719b5cebea44f4ed9c2c6c723889cbdd256c123
+  image: europe-west4-docker.pkg.dev/internet-ctf/challenges/challenge:e69f881a41421adb9f97e520ce7f4d7d7e13fb38772b55d501c46d80e02ae6c4
