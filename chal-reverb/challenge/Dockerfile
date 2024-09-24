@@ -41,7 +41,7 @@ RUN chmod +777 /home/user/app.py
 RUN chmod +777 /dev/random
 RUN chmod +777 /dev/urandom
 
-RUN mkdir -p /logs
+#RUN mkdir -p /logs
 RUN touch /logs/log
 #RUN chmod -R +777 /logs
 #RUN chmod a=w /logs/log
