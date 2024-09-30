@@ -33,7 +33,7 @@ EXPOSE 443
 EXPOSE 22
 
 
-
+FROM europe-west4-docker.pkg.dev/internet-ctf/custom-images/kctf-source
 ## Create necessary directories and fix permissions
 #RUN mkdir -p /var/opt/gitlab /var/log/gitlab && \
 #    chown -R git:git /etc/gitlab /var/opt/gitlab /var/log/gitlab
