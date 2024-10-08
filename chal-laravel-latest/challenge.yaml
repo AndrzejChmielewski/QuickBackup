@@ -26,8 +26,39 @@ spec:
               readOnly: true
               volumeAttributes:
                 secretProviderClass: laravel-latest-secret-provider
+        affinity:
+          nodeAffinity:
+            requiredDuringSchedulingIgnoredDuringExecution:
+              nodeSelectorTerms:
+                - matchExpressions:
+                    - key: kubernetes.io/os
+                      operator: In
+                      values:
+                        - linux
+            preferredDuringSchedulingIgnoredDuringExecution:
+              - weight: 50
+                preference:
+                  matchExpressions:
+                    - key: node
+                      operator: In
+                      values:
+                        - two
+              - weight: 50
+                preference:
+                  matchExpressions:
+                    - key: node
+                      operator: In
+                      values:
+                        - one
+              - weight: 75
+                preference:
+                  matchExpressions:
+                    - key: node
+                      operator: In
+                      values:
+                        - three
   healthcheck:
     # TIP: disable the healthcheck during development
     enabled: true
-    image: europe-west4-docker.pkg.dev/internet-ctf/challenges/healthcheck:7cb4fa2299fb1f92fd89c791ede4c025e90539554ba9343c87f1b621d0664951
-  image: europe-west4-docker.pkg.dev/internet-ctf/challenges/challenge:3e5b89de213ee2c7907922444ebd05c7957bf08e8b5ff07a6f430da340101764
+    image: europe-west4-docker.pkg.dev/internet-ctf/challenges/healthcheck:e4963b7c55a26fb7f97201a7f8f1c62a8d1e43689c8c5ec4f7161a5fa4f939ed
+  image: europe-west4-docker.pkg.dev/internet-ctf/challenges/challenge:c3026e1be01174988c7918667742e770a20166bc055f9efd5baa15691e970475
