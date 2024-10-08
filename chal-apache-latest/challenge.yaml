@@ -26,38 +26,38 @@ spec:
               readOnly: true
               volumeAttributes:
                 secretProviderClass: apache-latest-secret-provider
-      affinity:
-        nodeAffinity:
-          requiredDuringSchedulingIgnoredDuringExecution:
-            nodeSelectorTerms:
-              - matchExpressions:
-                  - key: kubernetes.io/os
-                    operator: In
-                    values:
-                      - linux
-          preferredDuringSchedulingIgnoredDuringExecution:
-            - weight: 50
-              preference:
-                matchExpressions:
-                  - key: node
-                    operator: In
-                    values:
-                      - two
-            - weight: 50
-              preference:
-                matchExpressions:
-                  - key: node
-                    operator: In
-                    values:
-                      - one
-            - weight: 75
-              preference:
-                matchExpressions:
-                  - key: node
-                    operator: In
-                    values:
-                      - three
+        affinity:
+          nodeAffinity:
+            requiredDuringSchedulingIgnoredDuringExecution:
+              nodeSelectorTerms:
+                - matchExpressions:
+                    - key: kubernetes.io/os
+                      operator: In
+                      values:
+                        - linux
+            preferredDuringSchedulingIgnoredDuringExecution:
+              - weight: 50
+                preference:
+                  matchExpressions:
+                    - key: node
+                      operator: In
+                      values:
+                        - two
+              - weight: 50
+                preference:
+                  matchExpressions:
+                    - key: node
+                      operator: In
+                      values:
+                        - one
+              - weight: 75
+                preference:
+                  matchExpressions:
+                    - key: node
+                      operator: In
+                      values:
+                        - three
   healthcheck:
     enabled: true
-    image: europe-west4-docker.pkg.dev/internet-ctf/challenges/healthcheck:7eda348750d737530d360fadc7863b9d052f1e3b5b733d02985fc81cb7cdfef4
-  image: europe-west4-docker.pkg.dev/internet-ctf/challenges/challenge:542a93de660ade041d5fe9a87e4bca6c42ef64324ed4b8c16dbd5a885c7854f3
+    image: europe-west4-docker.pkg.dev/internet-ctf/challenges/healthcheck:e8aee42133434275f095633bc48dab7f8e1c2551dc6714789d69e9ba2df13794
+  image: europe-west4-docker.pkg.dev/internet-ctf/challenges/challenge:6963d34b44a0d482e1a4e3c170ea6da1a20e4436b171395b69fd7d99dd7d3acb
