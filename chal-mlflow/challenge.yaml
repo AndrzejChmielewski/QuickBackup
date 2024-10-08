@@ -26,8 +26,39 @@ spec:
               readOnly: true
               volumeAttributes:
                 secretProviderClass: mlflow-exposed-auth-bypass-secret-provider
+        affinity:
+          nodeAffinity:
+            requiredDuringSchedulingIgnoredDuringExecution:
+              nodeSelectorTerms:
+                - matchExpressions:
+                    - key: kubernetes.io/os
+                      operator: In
+                      values:
+                        - linux
+            preferredDuringSchedulingIgnoredDuringExecution:
+              - weight: 50
+                preference:
+                  matchExpressions:
+                    - key: node
+                      operator: In
+                      values:
+                        - two
+              - weight: 50
+                preference:
+                  matchExpressions:
+                    - key: node
+                      operator: In
+                      values:
+                        - one
+              - weight: 75
+                preference:
+                  matchExpressions:
+                    - key: node
+                      operator: In
+                      values:
+                        - three
   healthcheck:
     # TIP: disable the healthcheck during development
     enabled: true
-    image: europe-west4-docker.pkg.dev/internet-ctf/challenges/healthcheck:26961c13d0a2e9d2fc71beb4dc1843669f606ceaf855edb77a118778a2fc3bd3
-  image: europe-west4-docker.pkg.dev/internet-ctf/challenges/challenge:2542a1001175473655ba749fbba42cfda9592c14bdbfd43111539b780222eea4
+    image: europe-west4-docker.pkg.dev/internet-ctf/challenges/healthcheck:c1049880fcf45f29b502c4c9c5d92197dbf071014c97e400325c9ec29cfcca38
+  image: europe-west4-docker.pkg.dev/internet-ctf/challenges/challenge:b0d3e94143a832316657aeb09112c5c75b4b28d36e2e1e963dbb44b573df0ffe
