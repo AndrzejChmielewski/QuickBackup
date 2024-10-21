@@ -20,27 +20,51 @@ RUN echo "deb http://archive.debian.org/debian stretch main" > /etc/apt/sources.
 COPY httpd.conf /usr/local/apache2/conf/httpd.conf
 
 # Install packages
-RUN apt-get update && apt-get install -y zip unzip curl git sqlite3 vim
+RUN apt-get update && apt-get install -y zip unzip curl git vim wget
 
+# installing build: 3.45.0
+RUN wget https://www.sqlite.org/2024/sqlite-autoconf-3460000.tar.gz
+# unzipping build
+RUN tar -xvzf sqlite-autoconf-3460000.tar.gz
+
+# below steps are for installing the build in /usr/local/bin
+RUN cd sqlite-autoconf-3460000 || exit
+RUN ./sqlite-autoconf-3460000/configure
+#RUN make
+RUN make install
+
+# remove the previous version
+RUN apt-get remove -y --auto-remove sqlite3
+RUN ln -s /usr/local/bin/sqlite3 /usr/bin/sqlite3
+RUN apt-get update && apt-get install -y sqlite3-tools
 # Install Composer
 RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
 RUN composer self-update
 RUN composer install --no-dev
+#RUN composer require drupal/core-recommended:^11.0.0@dev
+RUN composer update drupal/core-recommended --with-dependencies
 
+#RUN composer require symfony/event-dispatcher --update-with-all-dependencies
 # Install Semver
-RUN composer update composer/semver ^1.4.0
+RUN composer update composer/semver 
 # Install Drush
-RUN composer require drush/drush ^12.5.3 --update-with-all-dependencies
+RUN composer require drush/drush --update-with-all-dependencies
+
+
+
+RUN apt-get update
+RUN apt-get install sqlite3
+
 
 # Install REST UI module
 RUN composer require drupal/restui
-
+RUN sqlite3 --version
 # Install site
 RUN composer create-project drupal/recommended-project
 RUN drush si --db-url="sqlite://sites/default/files/.ht.sqlite" --site-name="Drupal-latest" --account-pass=XtUmoOJe8D
 
 # Install Socat
-RUN apt-get install socat sqlite3 -y --force-yes; exit 0
+RUN apt-get install socat -y --force-yes; exit 0
 
 # Configure 8080 port
 RUN sed -i '5s/80/8080/' /etc/apache2/ports.conf
