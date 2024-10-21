@@ -41,10 +41,10 @@ RUN chmod +777 /home/user/app.py
 RUN chmod +777 /dev/random
 RUN chmod +777 /dev/urandom
 
-#RUN mkdir -p /logs
+RUN mkdir -p /logs
 RUN touch /logs/log
-#RUN chmod -R +777 /logs
-#RUN chmod a=w /logs/log
+RUN chmod -R +777 /logs
+RUN chmod a=w /logs/log
 
 ADD start.sh /home/user/start.sh
 RUN chmod a+wx /home/user/start.sh
@@ -68,7 +68,7 @@ VOLUME /tmp
 
 VOLUME /chroot/usr/local/lib/python3.10/dist-packages
 VOLUME /chroot/dev
-
+VOLUME /chroot/logs
 COPY --from=chroot / /chroot
 
 VOLUME /chroot/home/user
