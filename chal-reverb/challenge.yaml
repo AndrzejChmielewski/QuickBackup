@@ -6,7 +6,10 @@ spec:
   deployed: true
   powDifficultySeconds: 0
   network:
-    public: false
+    public: true
+    ports:
+      - protocol: "TCP"
+        targetPort: 1337
   podTemplate:
     template:
       spec:
@@ -25,5 +28,6 @@ spec:
                 secretProviderClass: reverb-secret-provider
   healthcheck:
     # TIP: disable the healthcheck during development
-    enabled: false
+    enabled: true
+    image: europe-west4-docker.pkg.dev/internet-ctf/challenges/healthcheck:27054f7b9c2c38bfbe153e0dbe7df4e2ab5536c5749cfde9f13997da8034e72f
   image: europe-west4-docker.pkg.dev/internet-ctf/challenges/challenge:bf23a96280b24e6398b514bae83ce2587864365e7582be672a172b6d45e4ca40

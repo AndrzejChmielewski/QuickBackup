@@ -11,7 +11,7 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-FROM europe-west4-docker.pkg.dev/internet-ctf/custom-images/kctf-source
+FROM europe-west4-docker.pkg.dev/internet-ctf/challenges/healthcheck_base
 
 COPY healthcheck_loop.sh healthcheck.py healthz_webserver.py /home/user/
 
