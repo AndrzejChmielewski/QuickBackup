@@ -1,0 +1,13 @@
+apiVersion: kctf.dev/v1
+kind: Challenge
+metadata:
+  name: chal-postgresql
+spec:
+  deployed: true
+  powDifficultySeconds: 0
+  network:
+    public: false
+  healthcheck:
+    # TIP: disable the healthcheck during development
+    enabled: false
+  image: europe-west4-docker.pkg.dev/internet-ctf/challenges/challenge:474f3ec5ab34b2739cf198547439108a6858643e20dd0759d830f51f3ce25d2c
