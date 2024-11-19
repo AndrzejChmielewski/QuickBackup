@@ -12,9 +12,10 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-
 # Start with the official PostgreSQL image from Docker Hub
-FROM postgres:latest
+FROM postgres:latest as chroot
+
+RUN /usr/sbin/useradd --no-create-home -u 1000 user
 
 # Set environment variables for PostgreSQL
 ENV POSTGRES_USER=myuser
@@ -25,16 +26,46 @@ ENV POSTGRES_DB=mydatabase
 RUN mkdir -p /var/lib/postgresql/socket && chmod -R 0777 /var/lib/postgresql/socket
 ENV PGDATA=/var/lib/postgresql/data
 
+RUN mkdir -p /home/user
+
+#install socat
+USER root
+RUN echo 'deb http://archive.debian.org/debian/ rodete main' >> /etc/apt/sources.list
+RUN apt-get update; exit 0
+RUN apt-get install socat -y --force-yes; exit 0
+
+
 # Copy any custom scripts or configuration files if needed
 # COPY ./init.sql /docker-entrypoint-initdb.d/
 
 # Expose the PostgreSQL port
-EXPOSE 5432
-VOLUME /var/run/postgresql
+#EXPOSE 5432
+#VOLUME /var/run/postgresql
 
+ADD start.sh /home/user/start.sh
+RUN chmod a+wx /home/user/start.sh
+
+FROM europe-west4-docker.pkg.dev/internet-ctf/custom-images/kctf-source
+
+COPY --from=chroot / /chroot
+VOLUME /chroot/home/user
+COPY --from=chroot / /chroot
+VOLUME /chroot/logs
+RUN chown -Rc user /chroot/home/user
+VOLUME /chroot/var/run/postgresql
+
+#fix permission
+#RUN mkdir -p /chroot/var/run/postgresql
+RUN chmod -R 0777 /chroot/var/run/postgresql
+
+COPY nsjail.cfg /home/user/
+
+CMD kctf_setup && \
+    kctf_setup \
+    && kctf_drop_privs nsjail --config /home/user/nsjail.cfg --port 1337 -- /home/user/start.sh
 
 #start
-CMD ["postgres"]
+#CMD ["postgres"]
 
 #To conect to it:
 #kctf chal debug port-forward --port 5432
